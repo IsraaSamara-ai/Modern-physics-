@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفيزياء الحديثة: طبيعة الضوء | إعداد: Israa Youssuf Samara</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --panel-bg: #ffffff;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .credits {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 1rem;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .nav-btn {
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .nav-btn.active, .nav-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .section {
+            display: none;
+            background: var(--panel-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: var(--primary-color);
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .equation {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            direction: ltr;
+            margin: 1rem 0;
+            border-right: 4px solid var(--primary-color);
+        }
+
+        /* Controls & Inputs */
+        .controls {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--accent-color);
+        }
+
+        .btn-secondary:hover {
+            background: #d97706;
+        }
+
+        /* Canvas & Visuals */
+        canvas {
+            background: #000;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            display: block;
+            margin: 1rem auto;
+            border: 2px solid #333;
+        }
+
+        .visual-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            background: radial-gradient(circle, #ffffff 0%, #e2e8f0 100%);
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        /* Lab Specific Styles */
+        .lab-step-info {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .lab-visual {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Elements in Lab */
+        .electroscope-stand {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 150px;
+            background: #64748b;
+        }
+
+        .electroscope-head {
+            position: absolute;
+            bottom: 170px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 20px;
+            background: #94a3b8;
+            border-radius: 50%;
+            border: 2px solid #475569;
+            z-index: 2;
+        }
+
+        .leaf {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            width: 8px;
+            height: 100px;
+            background: gold; /* Gold leaf */
+            transform-origin: top center;
+            transition: transform 1s ease-out;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .leaf.left {
+            margin-left: -9px;
+            transform: rotate(0deg); /* Closed */
+        }
+
+        .leaf.right {
+            margin-left: 1px;
+            transform: rotate(0deg); /* Closed */
+        }
+
+        .leaf.spread.left { transform: rotate(-30deg); }
+        .leaf.spread.right { transform: rotate(30deg); }
+
+        /* Light Source */
+        .light-source {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        .light-rays {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .ray {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: red;
+            transform-origin: 0 50%;
+            opacity: 0;
+        }
+
+        .uv-active .ray {
+            background: #8b5cf6; /* Violet */
+            box-shadow: 0 0 5px #8b5cf6;
+        }
+
+        .red-active .ray {
+            background: #ef4444; /* Red */
+        }
+
+        /* Rod */
+        .rod {
+            position: absolute;
+            width: 120px;
+            height: 10px;
+            background: #a8a29e;
+            top: 100px;
+            right: -150px; /* Start off screen */
+            transition: right 0.5s;
+            border-radius: 5px;
+            z-index: 10;
+        }
+        
+        .rod.cloth {
+            background: #db2777; /* Silk cloth color */
+        }
+
+        .rod.move-in {
+            right: 40%;
+        }
+
+        /* Icons */
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .tooltip {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Blackbody Visual */
+        .blackbody-box {
+            width: 150px;
+            height: 150px;
+            background: black;
+            margin: 20px auto;
+            border-radius: 8px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .blackbody-glow {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            opacity: 0.8;
+            transition: background-color 0.5s;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>الفيزياء الحديثة: الطبيعة الجسيمية للضوء</h1>
+    <div class="credits">إعداد: Israa Youssuf Samara</div>
+</header>
+
+<nav>
+    <button class="nav-btn active" onclick="showSection('blackbody')">إشعاع الجسم الأسود</button>
+    <button class="nav-btn" onclick="showSection('lab')">المختبر الافتراضي (كهروضوئية)</button>
+    <button class="nav-btn" onclick="showSection('lenard')">تجربة لينارد</button>
+    <button class="nav-btn" onclick="showSection('einstein')">تفسير أينشتين</button>
+    <button class="nav-btn" onclick="showSection('compton')">ظاهرة كومبتون</button>
+</nav>
+
+<main>
+    <!-- Section 1: Blackbody Radiation -->
+    <section id="blackbody" class="section active">
+        <h2>إشعاع الجسم الأسود (Blackbody Radiation)</h2>
+        <p>
+            لماذا يتغير لون الحديد المسخن من الأحمر إلى الأبيض؟ الفيزياء الكلاسيكية فشلت في تفسير الطيف المنبعث (كارثة الأشعة فوق البنفسجية).
+            جاء <strong>ماكس بلانك</strong> بفرضية ثورية: الطاقة ليست متصلة، بل تُشع وتُمتص في حزم مستقلة تسمى <strong>الكم (Quanta)</strong>.
+        </p>
+        
+        <div class="controls">
+            <label>درجة الحرارة (Temperature K): <span id="temp-val">3000</span> K</label>
+            <input type="range" id="temp-slider" min="1000" max="10000" value="3000" step="100">
+            <span class="tooltip">حرك المؤشر لترى كيف تتغير شدة الإشعاع واللون.</span>
+        </div>
+
+        <div class="blackbody-box">
+            <div id="glow-box" class="blackbody-glow"></div>
+        </div>
+        <p style="text-align:center; font-size: 0.9rem;">محاكاة بصرية للجسم الأسود</p>
+
+        <canvas id="blackbody-canvas" width="600" height="300"></canvas>
+        
+        <div class="equation">
+            E = hf
+        </div>
+        <p>
+            حيث <strong>E</strong> هي طاقة الكمة، <strong>h</strong> هو ثابت بلانك، و <strong>f</strong> هو التردد.
+            افترض بلانك أن الطاقة الكلية: En = n hf
+        </p>
+    </section>
+
+    <!-- Section 2: Interactive Lab (Photoelectric Effect) -->
+    <section id="lab" class="section">
+        <h2>المختبر الافتراضي: الظاهرة الكهروضوئية</h2>
+        <p>
+            في هذا المختبر، ستقوم بدور العالم لاكتشاف الظاهرة الكهروضوئية. اتبع الخطوات بعناية ولاحظ ردة فعل الكشاف الكهربائي.
+        </p>
+
+        <div class="lab-step-info" id="lab-instruction">
+            الخطوة 1: جهز صفيحة الخارصين (صقلها) لتكون نظيفة.
+        </div>
+
+        <div class="visual-container">
+            <div class="lab-visual">
+                <div class="light-source" id="lamp-label">مصدر الضوء</div>
+                
+                <div class="light-rays" id="rays-container">
+                    <!-- Rays generated by JS -->
+                </div>
+
+                <div class="rod" id="glass-rod">
+                    <span style="position:absolute; top:-20px; width:100%; text-align:center; font-size:0.7rem;">قضيب زجاجي + حرير</span>
+                </div>
+
+                <div class="electroscope-head" id="zinc-plate"></div>
+                <div class="electroscope-stand"></div>
+                <div class="leaf left" id="leaf-l"></div>
+                <div class="leaf right" id="leaf-r"></div>
+            </div>
+        </div>
+
+        <div class="controls" style="text-align: center; margin-top: 1rem;">
+            <button class="btn btn-secondary" id="next-step-btn" onclick="nextLabStep()">الخطوة التالية</button>
+            <button class="btn" onclick="resetLab()">إعادة التجربة</button>
+        </div>
+        
+        <div id="lab-analysis" style="display:none; margin-top:1rem; border-top: 1px dashed #ccc; padding-top:1rem;">
+            <h3>التحليل والاستنتاج:</h3>
+            <ul>
+                <li><strong>الضوء الأحمر:</strong> لم يحدث تفريغ للشحنة رغم زيادة الشدة. هذا يعني أن طاقة الفوتونات الحمراء أقل من طاقة ربط الإلكترون (اقتران الشغل).</li>
+                <li><strong>الأشعة فوق البنفسجية:</strong> حدث تفريغ فوري. هذا يعني أن الفوتونات تمتلك طاقة كافية لتحرير الإلكترونات.</li>
+                <li><strong>الاستنتاج:</strong> طاقة الضوء تعتمد على <strong>تردده</strong> (لونه)، وليس على شدته أو زمن التسليط.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Section 3: Lenard's Experiment -->
+    <section id="lenard" class="section">
+        <h2>تجربة لينارد (Lenard's Experiment)</h2>
+        <p>
+            استخدم لينارد أنبوباً مفرغاً لقياس طاقة الإلكترونات المنبعثة. لاحظ أن هناك تردداً محدداً (تردد العتبة Threshold Frequency) دونه لا تنبعث إلكترونات، مهما زادت الشدة.
+        </p>
+
+        <div class="controls">
+            <label>تردد الضوء الساقط (Color/Frequency)</label>
+            <input type="range" id="lenard-freq" min="4" max="15" value="6" step="0.5" oninput="updateLenard()">
+            <span class="tooltip" id="freq-label">الأحمر (منخفض)</span>
+
+            <label>شدة الضوء (Intensity)</label>
+            <input type="range" id="lenard-intensity" min="1" max="10" value="5" oninput="updateLenard()">
+        </div>
+
+        <canvas id="lenard-canvas" width="600" height="300"></canvas>
+        
+        <div style="display: flex; justify-content: space-around; margin-top: 1rem;">
+            <div style="text-align:center;">
+                <h3>مشاهدات لينارد</h3>
+                <ul style="text-align: right; font-size: 0.9rem;">
+                    <li>الانبعاث فوري إذا كان f > f0.</li>
+                    <li>زيادة الشدة تزيد <strong>عدد</strong> الإلكترونات (التيار)، ولا تزيد طاقتها.</li>
+                    <li>زيادة التردد تزيد <strong>الطاقة الحركية</strong> للإلكترونات.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Einstein's Explanation -->
+    <section id="einstein" class="section">
+        <h2>تفسير أينشتين (Einstein's Explanation)</h2>
+        <p>
+            افترض أينشتين أن الضوء يتكون من حزم طاقة تسمى <strong>فوتونات</strong>. عند سقوط فوتون واحد، يمتصه إلكترون واحد.
+        </p>
+        
+        <div class="equation">
+            K.E<sub>max</sub> = hf - &Phi;
+        </div>
+        <p>
+            حيث <strong>&Phi; (Phi)</strong> هو <strong>اقتران الشغل</strong> (أقل طاقة لازمة لتحرير الإلكترون من الفلز).
+        </p>
+
+        <div class="controls">
+            <label>اختر المادة (لتغيير اقتران الشغل &Phi;)</label>
+            <select id="metal-select" onchange="updateEinstein()" style="width: 100%; padding: 8px; border-radius: 6px;">
+                <option value="2.14">سيزيوم (Cesium) - &Phi; = 2.14 eV</option>
+                <option value="2.28">صوديوم (Sodium) - &Phi; = 2.28 eV</option>
+                <option value="4.7">نحاس (Copper) - &Phi; = 4.7 eV</option>
+            </select>
+            <br><br>
+            <label>تردد الفوتون الساقط (Frequency × 10<sup>14</sup> Hz)</label>
+            <input type="range" id="einstein-freq" min="3" max="15" value="5" step="0.1" oninput="updateEinstein()">
+        </div>
+
+        <canvas id="einstein-canvas" width="600" height="300"></canvas>
+        
+        <div id="einstein-result" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            <!-- JS updates this -->
+        </div>
+    </section>
+
+    <!-- Section 5: Compton Scattering -->
+    <section id="compton" class="section">
+        <h2>ظاهرة كومبتون (Compton Effect)</h2>
+        <p>
+            دليل قوي آخر على طبيعة الضوء الجسيمية. عندما يصطدم فوتون (أشعة سينية) بإلكترون، يتناثر الفوتون ويزداد طوله الموجي (ينقص طاقته).
+        </p>
+        <div class="equation">
+            &Delta;&lambda; = &lambda;<sub>f</sub> - &lambda;<sub>i</sub> = (h / m<sub>e</sub>c) (1 - cos &theta;)
+        </div>
+
+        <div class="controls">
+            <label>زاوية التشتت (Scattering Angle &theta;)</label>
+            <input type="range" id="compton-angle" min="0" max="180" value="45" oninput="updateCompton()">
+            <span class="tooltip" id="angle-display">45°</span>
+        </div>
+
+        <canvas id="compton-canvas" width="600" height="300"></canvas>
+        
+        <p style="text-align: center; margin-top: 10px; font-size: 0.9rem;">
+            <span style="color: red;">&rarr;</span> فوتون ساقط &nbsp;&nbsp; 
+            <span style="color: blue;">&rarr;</span> فوتون مشتت (أطول موجياً) &nbsp;&nbsp; 
+            <span style="color: green;">&bull;</span> إلكترون تراجعي
+        </p>
+    </section>
+
+</main>
+
+<footer>
+    <p>جميع الحقوق محفوظة &copy; 2023 | تصميم وتطوير: Israa Youssuf Samara</p>
+</footer>
+
+<script>
+    /* --- Navigation --- */
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(id).classList.add('active');
+        document.querySelector(`button[onclick="showSection('${id}')"]`).classList.add('active');
+        
+        // Trigger resize/redraw for canvases if needed
+        if(id === 'blackbody') drawBlackbody();
+        if(id === 'lenard') updateLenard();
+        if(id === 'einstein') updateEinstein();
+        if(id === 'compton') updateCompton();
+    }
+
+    /* --- Blackbody Radiation --- */
+    const tempSlider = document.getElementById('temp-slider');
+    const tempVal = document.getElementById('temp-val');
+    const glowBox = document.getElementById('glow-box');
+    const bbCanvas = document.getElementById('blackbody-canvas');
+    const bbCtx = bbCanvas.getContext('2d');
+
+    function getKelvinColor(k) {
+        // Simplified approximation of blackbody color
+        let r, g, b;
+        if (k < 1000) return 'black';
+        if (k < 4000) { r=255; g=Math.min(255, k/20); b=0; } // Red to Orange
+        else if (k < 6000) { r=255; g=Math.min(255, (k-3000)/15); b=Math.min(255, (k-5000)/20); } // Orange to White
+        else { r=200; g=200; b=255; } // Blue-ish white
+        return `rgb(${r},${g},${b})`;
+    }
+
+    function drawBlackbody() {
+        const T = parseInt(tempSlider.value);
+        tempVal.innerText = T;
+        glowBox.style.backgroundColor = getKelvinColor(T);
+        glowBox.style.boxShadow = `0 0 ${T/50}px ${getKelvinColor(T)}`;
+
+        // Draw Graph
+        bbCtx.clearRect(0, 0, bbCanvas.width, bbCanvas.height);
+        
+        // Axes
+        bbCtx.strokeStyle = '#333';
+        bbCtx.lineWidth = 2;
+        bbCtx.beginPath();
+        bbCtx.moveTo(50, 250); bbCtx.lineTo(550, 250); // X axis (Wavelength)
+        bbCtx.moveTo(50, 250); bbCtx.lineTo(50, 20); // Y axis (Intensity)
+        bbCtx.stroke();
+
+        // Labels
+        bbCtx.fillStyle = '#000';
+        bbCtx.font = '12px Arial';
+        bbCtx.fillText("الطول الموجي (Wavelength) &rarr;", 400, 280);
+        bbCtx.fillText("Intensity &uarr;", 10, 40);
+        bbCtx.fillText("UV", 450, 240);
+        bbCtx.fillText("Visible", 300, 240);
+        bbCtx.fillText("IR", 100, 240);
+
+        // Planck Curve Approximation
+        bbCtx.strokeStyle = 'blue';
+        bbCtx.lineWidth = 3;
+        bbCtx.beginPath();
+        
+        // Peak wavelength shifts with T (Wien's Law: lambda_max = b/T)
+        // Visual scaling only
+        const peakX = 200000 / T; 
+        const peakY = T / 15; 
+
+        for(let x = 50; x < 550; x+=5) {
+            // Gaussian-like shape for visualization
+            const normX = (x - 50 - peakX) / 40; 
+            const y = 250 - peakY * Math.exp(-(normX * normX));
+            if(x===50) bbCtx.moveTo(x, y);
+            else bbCtx.lineTo(x, y);
+        }
+        bbCtx.stroke();
+    }
+
+    tempSlider.addEventListener('input', drawBlackbody);
+
+    /* --- Interactive Lab (Photoelectric) --- */
+    let labStep = 0;
+    const instructions = [
+        "الخطوة 1: صقل صفيحة الخارصين (اضغط للتنفيذ).",
+        "الخطوة 2: شحن الكشاف الكهربائي بالقضيب الزجاجي والحرير.",
+        "الخطوة 3: وضع صفيحة الخارصين على الكشاف.",
+        "الخطوة 4: تسليط الضوء الأحمر (ذو تردد منخفض). لاحظ absence of effect.",
+        "الخطوة 5: زيادة شدة الضوء الأحمر. هل يتغير شيء؟",
+        "الخطوة 6: تسليط الأشعة فوق البنفسجية (UV). لاحظ تفريغ الشحنة!",
+        "الانتهاء: لقد أثبتت التجربة أن الطاقة تعتمد على التردد وليس الشدة."
+    ];
+
+    function nextLabStep() {
+        if(labStep < instructions.length - 1) {
+            labStep++;
+            updateLabState();
+        }
+    }
+
+    function resetLab() {
+        labStep = 0;
+        updateLabState();
+        document.getElementById('lab-analysis').style.display = 'none';
+    }
+
+    function updateLabState() {
+        document.getElementById('lab-instruction').innerText = instructions[labStep];
+        const rod = document.getElementById('glass-rod');
+        const leafL = document.getElementById('leaf-l');
+        const leafR = document.getElementById('leaf-r');
+        const rays = document.getElementById('rays-container');
+        const btn = document.getElementById('next-step-btn');
+
+        // Reset
+        rays.className = 'light-rays';
+        rod.classList.remove('move-in');
+        rod.style.opacity = '1';
+        
+        // Logic per step
+        switch(labStep) {
+            case 0: // Polish
+                leafL.classList.remove('spread');
+                leafR.classList.remove('spread');
+                document.getElementById('zinc-plate').style.background = '#94a3b8'; // Dull
+                break;
+            case 1: // Charge
+                setTimeout(() => rod.classList.add('move-in'), 100);
+                setTimeout(() => rod.classList.add('cloth'), 600); // Add cloth visual
+                setTimeout(() => {
+                    rod.style.opacity = '0'; // Rod leaves
+                    leafL.classList.add('spread');
+                    leafR.classList.add('spread');
+                }, 1500);
+                break;
+            case 2: // Plate
+                document.getElementById('zinc-plate').style.background = '#b0b0b0'; // Shiny Zinc
+                break;
+            case 3: // Red Light
+                createRays('red');
+                rays.classList.add('red-active');
+                // Leaves stay spread
+                break;
+            case 4: // Red Intense
+                createRays('red-intense');
+                rays.classList.add('red-active');
+                break;
+            case 5: // UV
+                createRays('uv');
+                rays.classList.add('uv-active');
+                // Leaves collapse
+                setTimeout(() => {
+                    leafL.classList.remove('spread');
+                    leafR.classList.remove('spread');
+                }, 1000);
+                break;
+            case 6: // End
+                createRays('uv');
+                rays.classList.add('uv-active');
+                document.getElementById('lab-analysis').style.display = 'block';
+                btn.disabled = true;
+                break;
+        }
+    }
+
+    function createRays(type) {
+        const container = document.getElementById('rays-container');
+        container.innerHTML = '';
+        const count = type === 'red-intense' ? 20 : 8;
+        
+        for(let i=0; i<count; i++) {
+            const ray = document.createElement('div');
+            ray.className = 'ray';
+            ray.style.width = '200px';
+            // Angle towards the plate (center bottom)
+            const angle = -135 + (Math.random() * 30 - 15); 
+            ray.style.transform = `rotate(${angle}deg)`;
+            ray.style.opacity = '0.6';
+            ray.style.animation = `pulse 0.5s infinite alternate`;
+            container.appendChild(ray);
+        }
+    }
+
+    /* --- Lenard Experiment --- */
+    const lenardCanvas = document.getElementById('lenard-canvas');
+    const lenardCtx = lenardCanvas.getContext('2d');
+    
+    function updateLenard() {
+        const f = parseFloat(document.getElementById('lenard-freq').value);
+        const I = parseInt(document.getElementById('lenard-intensity').value);
+        const label = document.getElementById('freq-label');
+        
+        // Color mapping
+        if(f < 5.5) { label.innerText = "الأحمر/برتقالي (منخفض)"; label.style.color="red"; }
+        else if(f < 7.5) { label.innerText = "أزرق (متوسط)"; label.style.color="blue"; }
+        else { label.innerText = "فوق بنفسجي (عالي)"; label.style.color="purple"; }
+
+        drawLenardCircuit(f, I);
+    }
+
+    function drawLenardCircuit(freq, intensity) {
+        lenardCtx.clearRect(0, 0, 600, 300);
+        
+        // Tube
+        lenardCtx.fillStyle = '#e0e0e0';
+        lenardCtx.fillRect(100, 50, 400, 150);
+        lenardCtx.strokeStyle = '#999';
+        lenardCtx.strokeRect(100, 50, 400, 150);
+        
+        // Emitter & Collector
+        lenardCtx.fillStyle = '#555'; // Emitter
+        lenardCtx.fillRect(120, 100, 20, 80);
+        lenardCtx.fillStyle = '#555'; // Collector
+        lenardCtx.fillRect(560, 100, 20, 80); // Adjusted visually
+
+        // Light Source
+        lenardCtx.fillStyle = freq > 6.0 ? '#8b5cf6' : '#ef4444';
+        lenardCtx.beginPath();
+        lenardCtx.arc(60, 140, 20, 0, Math.PI*2);
+        lenardCtx.fill();
+        
+        // Light Rays
+        lenardCtx.strokeStyle = freq > 6.0 ? '#8b5cf6' : '#ef4444';
+        lenardCtx.lineWidth = intensity / 2;
+        lenardCtx.beginPath();
+        lenardCtx.moveTo(80, 140); lenardCtx.lineTo(120, 140);
+        lenardCtx.stroke();
+
+        // Electrons (Animation logic simplified for canvas redraw)
+        // Threshold freq assumed ~ 6.0 for visualization
+        if(freq >= 6.0) {
+            lenardCtx.fillStyle = 'yellow';
+            const numElectrons = Math.min(intensity * 2, 10);
+            for(let i=0; i<numElectrons; i++) {
+                // Random positions moving right
+                const ex = 150 + (Date.now()/5 + i*50) % 400;
+                const ey = 120 + Math.sin(Date.now()/200 + i)*10;
+                lenardCtx.beginPath();
+                lenardCtx.arc(ex, ey, 4, 0, Math.PI*2);
+                lenardCtx.fill();
+            }
+            requestAnimationFrame(() => drawLenardCircuit(freq, intensity));
+            
+            // Ammeter
+            lenardCtx.fillStyle = 'black';
+            lenardCtx.fillText("Current: " + (intensity * 0.5) + " µA", 250, 30);
+        } else {
+            lenardCtx.fillStyle = 'black';
+            lenardCtx.fillText("Current: 0 µA (No Emission)", 250, 30);
+        }
+    }
+
+    /* --- Einstein Explanation --- */
+    const einsteinCanvas = document.getElementById('einstein-canvas');
+    const eCtx = einsteinCanvas.getContext('2d');
+
+    function updateEinstein() {
+        const metal = document.getElementById('metal-select');
+        const phi = parseFloat(metal.value); // eV
+        const f = parseFloat(document.getElementById('einstein-freq').value); // x 10^14 Hz
+        
+        // Constants (scaled for demo)
+        // E = hf. h approx 4.14 x 10^-15 eV.s. 
+        // Let's simplify: E (eV) = 4.14 * f * 10^-14? No.
+        // Real calc: 4.135e-15 * f * 10^14 = 0.4135 * f
+        const photonEnergy = 0.4135 * f; 
+        const ke = photonEnergy - phi;
+        
+        const resultDiv = document.getElementById('einstein-result');
+        
+        eCtx.clearRect(0,0, 600, 300);
+        
+        // Draw Metal Surface
+        eCtx.fillStyle = '#71717a';
+        eCtx.fillRect(0, 200, 600, 100);
+        
+        // Draw Electron
+        const ex = 100;
+        const ey = 180;
+        eCtx.fillStyle = '#facc15';
+        eCtx.beginPath();
+        eCtx.arc(ex, ey, 15, 0, Math.PI*2);
+        eCtx.fill();
+        eCtx.fillText("e-", ex-5, ey+5);
+
+        // Draw Photon
+        eCtx.strokeStyle = '#ef4444';
+        eCtx.lineWidth = 3;
+        eCtx.beginPath();
+        
+        let pX, pY;
+        if(ke > 0) {
+            // Impact/Movement
+            const time = (Date.now() % 1000) / 1000;
+            if(time < 0.5) {
+                // Approaching
+                pX = time * 400; 
+                pY = 180;
+                eCtx.setLineDash([5, 5]);
+                eCtx.moveTo(pX, pY-20); eCtx.lineTo(pX, pY+20);
+                eCtx.stroke();
+                eCtx.setLineDash([]);
+            } else {
+                // Electron flies off
+                pX = 200; // Photon hit
+                pY = 180;
+                
+                const moveTime = (time - 0.5) * 2;
+                const newEx = 100 + moveTime * 300 * (ke/2); // Speed proportional to KE
+                const newEy = 180 - moveTime * 200 * (ke/2);
+                
+                eCtx.beginPath();
+                eCtx.arc(newEx, newEy, 15, 0, Math.PI*2);
+                eCtx.fill();
+                
+                // Trajectory line
+                eCtx.strokeStyle = 'rgba(255,255,0,0.3)';
+                eCtx.beginPath();
+                eCtx.moveTo(100, 180);
+                eCtx.lineTo(newEx, newEy);
+                eCtx.stroke();
+            }
+            resultDiv.innerHTML = `طاقة الفوتون: ${photonEnergy.toFixed(2)} eV | اقتران الشغل: ${phi} eV <br> <span style="color:green">الطاقة الحركية: ${ke.toFixed(2)} eV (انبعاث)</span>`;
+            requestAnimationFrame(updateEinstein);
+        } else {
+            // No emission (Photon stuck or absorbed without effect)
+            pX = 100; 
+            pY = 150; // Hovering
+            eCtx.beginPath();
+            eCtx.arc(pX, pY, 10, 0, Math.PI*2);
+            eCtx.fillStyle = 'red';
+            eCtx.fill();
+            resultDiv.innerHTML = `طاقة الفوتون: ${photonEnergy.toFixed(2)} eV | اقتران الشغل: ${phi} eV <br> <span style="color:red">لا يحدث انبعاث (الطاقة < اقتران الشغل)</span>`;
+        }
+    }
+
+    /* --- Compton Scattering --- */
+    const comptonCanvas = document.getElementById('compton-canvas');
+    const cCtx = comptonCanvas.getContext('2d');
+
+    function updateCompton() {
+        const angleDeg = document.getElementById('compton-angle').value;
+        document.getElementById('angle-display').innerText = angleDeg + "°";
+        
+        const angleRad = angleDeg * Math.PI / 180;
+        
+        cCtx.clearRect(0,0, 600, 300);
+        
+        const cx = 300, cy = 150; // Center (electron)
+        
+        // Electron
+        cCtx.fillStyle = '#22c55e';
+        cCtx.beginPath();
+        cCtx.arc(cx, cy, 15, 0, Math.PI*2);
+        cCtx.fill();
+        cCtx.fillText("e-", cx-5, cy+5);
+
+        // Incident Photon
+        cCtx.strokeStyle = 'red';
+        cCtx.lineWidth = 3;
+        cCtx.beginPath();
+        cCtx.moveTo(0, cy);
+        cCtx.lineTo(cx, cy);
+        cCtx.stroke();
+        cCtx.fillText("&lambda;<sub>i</sub>", 100, cy-10);
+
+        // Scattered Photon
+        // Calculate simple end point
+        const len = 150;
+        const fx = cx + Math.cos(angleRad) * len;
+        const fy = cy - Math.sin(angleRad) * len; // Up is negative Y in canvas
+        
+        cCtx.strokeStyle = 'blue';
+        cCtx.beginPath();
+        cCtx.moveTo(cx, cy);
+        cCtx.lineTo(fx, fy);
+        cCtx.stroke();
+        cCtx.fillText("&lambda;<sub>f</sub> (&lambda;<sub>f</sub> > &lambda;<sub>i</sub>)", fx+10, fy);
+
+        // Recoil Electron (Simplified conservation of momentum visual)
+        // Just visual feedback, not exact vector math
+        const ex = cx + Math.cos((angleRad - Math.PI/2)/2) * len; 
+        const ey = cy + Math.sin((angleRad - Math.PI/2)/2) * len;
+        
+        cCtx.strokeStyle = 'green';
+        cCtx.setLineDash([5, 5]);
+        cCtx.beginPath();
+        cCtx.moveTo(cx, cy);
+        cCtx.lineTo(ex, ey);
+        cCtx.stroke();
+        cCtx.setLineDash([]);
+        
+        // Show Calculation
+        // Delta lambda = h/mc (1 - cos theta) -> 2.43 pm (1 - cos theta)
+        const deltaLambda = 2.43 * (1 - Math.cos(angleRad));
+        const info = document.createElement('div');
+        info.innerHTML = `تغير الطول الموجي (&Delta;&lambda;) = ${deltaLambda.toFixed(2)} pm`;
+        info.style.textAlign = "center";
+        info.style.marginTop = "5px";
+        
+        // Only add if not exists, else update
+        let calcDiv = document.getElementById('compton-calc');
+        if(!calcDiv) {
+            calcDiv = document.createElement('div');
+            calcDiv.id = 'compton-calc';
+            document.querySelector('#compton .controls').appendChild(calcDiv);
+        }
+        calcDiv.innerHTML = `&Delta;&lambda; = 2.43 (1 - cos(${angleDeg}°)) = ${deltaLambda.toFixed(2)} pm`;
+    }
+
+    // Initialize
+    window.onload = function() {
+        drawBlackbody();
+        updateLabState();
+        updateLenard();
+        updateEinstein();
+        updateCompton();
+    };
+
+</script>
+
+</body>
+</html>
